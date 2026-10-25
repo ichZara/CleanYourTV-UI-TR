@@ -64,6 +64,12 @@ final class Turkish {
             case "Home Screen": return "Ana Ekran";
             case "Screensaver": return "Ekran Koruyucu";
             case "Preview": return "Önizle";
+            case "TMDB account": return "TMDB Hesabı";
+            case "TMDB account, ": return "TMDB Hesabı, ";
+            case "Conta TMDB": return "TMDB Hesabı";
+            case "Conta TMDB, ": return "TMDB Hesabı, ";
+            case "Not connected": return "Bağlı değil (İsteğe bağlı)";
+            case "Não conectada": return "Bağlı değil (İsteğe bağlı)";
             case "On the TV: tick “Always allow” and press OK.": return "TV ekranında: “Her zaman izin ver”i seçip OK tuşuna basın.";
             case "RECOMMENDATIONS": return "ÖNERİLER";
             case "No TMDB key: see the README (config.properties).": return "TMDB anahtarı yok: config.properties dosyasına bakın.";

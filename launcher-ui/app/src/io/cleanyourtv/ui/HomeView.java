@@ -705,11 +705,12 @@ final class HomeView extends ViewGroup implements Choreographer.FrameCallback, H
     /** Drawer and sheet: the layers' positions and opacity (without redrawing their content). */
     private void updateMotion() {
         float d = drawer.value, dc = Ui.clamp(d), s = Ui.clamp(sheet.value);
-        float home = 1 - s, top = home * (1 - smoothstep(0, 0.32f, dc));
+        float home = 1 - s;
         float shift = SHIFT * k;
         float lift = -d * shift;
-        show(heroLayer, top, lift);
-        show(status, top, lift);
+        float heroAlpha = home * (1 - smoothstep(0.6f, 1.0f, dc));
+        show(heroLayer, heroAlpha, lift);
+        show(status, home, lift);
         show(platter, home, lift);
         show(tiles, home, lift);
         float da = home * smoothstep(0.1f, 0.6f, dc);
@@ -2754,16 +2755,32 @@ final class HomeView extends ViewGroup implements Choreographer.FrameCallback, H
             if (i == tab) lTabOn.setColor(blend(tone(L_INK, WHITE), L_INK, focus));   // always dark on the white pill
             c.drawText(tabs()[i], r.centerX() - p.measureText(tabs()[i]) / 2, r.centerY() + Ui.halfCap(p), p);
         }
+        int curPage = (cardIndex / 3) + 1;
+        int totalPages = (cards.size() + 2) / 3;
         if (cards.size() > 3 && lCardMeta != null) {
-            int curPage = (cardIndex / 3) + 1;
-            int totalPages = (cards.size() + 2) / 3;
-            String pageStr = curPage + " / " + totalPages;
+            String pageStr = (curPage > 1 ? "‹  " : "") + curPage + " / " + totalPages + (curPage < totalPages ? "  ›" : "");
             c.drawText(pageStr, topRects[2].right + 24 * k, topRects[2].centerY() + Ui.halfCap(lCardMeta), lCardMeta);
         }
         int top = -1;
         for (int i = 0; i < 3; i++) if (cardFocus[i].value > 0.02f && (top < 0 || cardFocus[i].value > cardFocus[top].value)) top = i;
         for (int i = 0; i < 3; i++) if (i != top) drawLightCard(c, i);
         if (top >= 0) drawLightCard(c, top);
+        if (cards.size() > 3 && curPage < totalPages && lCardMeta != null) {
+            float arrowX = cardRects[2].right + 28 * k;
+            float arrowY = cardRects[2].centerY();
+            Paint ap = new Paint(lCardMeta);
+            ap.setTextSize(40 * k);
+            ap.setColor(tone(0x99FFFFFF, 0x99FFFFFF));
+            c.drawText("›", arrowX, arrowY + Ui.halfCap(ap), ap);
+        }
+        if (cards.size() > 3 && curPage > 1 && lCardMeta != null) {
+            float arrowX = cardRects[0].left - 36 * k;
+            float arrowY = cardRects[0].centerY();
+            Paint ap = new Paint(lCardMeta);
+            ap.setTextSize(40 * k);
+            ap.setColor(tone(0x99FFFFFF, 0x99FFFFFF));
+            c.drawText("‹", arrowX, arrowY + Ui.halfCap(ap), ap);
+        }
     }
 
     private boolean picksOn() {
