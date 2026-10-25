@@ -177,7 +177,7 @@ final class Recs {
         return now(null);
     }
 
-    /** This hour's 3, movies only ("movie") or shows only ("tv"); null = both (the home screen tabs). */
+    /** This hour's picks, movies only ("movie") or shows only ("tv"); null = both (the home screen tabs). Up to 24 titles for horizontal browsing. */
     List<Pick> now(String kind) {
         List<Pick> list = new ArrayList<>();
         if (!hasKey(context)) return list;    // no TMDB key: no recommendations
@@ -188,10 +188,10 @@ final class Recs {
         }
         if (list.isEmpty()) return list;
         long hour = System.currentTimeMillis() / 3600_000L;
-        // Three per hour, never two from the same franchise ("Law & Order" and "Law & Order: Special…").
+        // Never two from the same franchise ("Law & Order" and "Law & Order: Special…").
         List<Pick> out = new ArrayList<>();
         java.util.Set<String> seen = new java.util.HashSet<>();
-        for (int i = 0; i < list.size() && out.size() < 3; i++) {
+        for (int i = 0; i < list.size() && out.size() < 24; i++) {
             Pick p = list.get((int) ((hour * 3 + i) % list.size()));
             if (seen.add(franchise(p.title))) out.add(p);
         }

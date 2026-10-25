@@ -83,12 +83,58 @@ final class Prefs {
         version++;
     }
 
+    // MARK: - Sounds and clock
+
+    static boolean sounds() { return sp().getBoolean("sounds", false); }
+    static void setSounds(boolean on) { put("sounds", on); }
+
+    /** "auto", "24h" or "12h". */
+    static String clockFormat() { return sp().getString("clock_format", "auto"); }
+    static void setClockFormat(String v) { put("clock_format", v); }
+
+    static String userEmail() {
+        String v = sp().getString("user_email", null);
+        if (v != null && !v.trim().isEmpty()) return v.trim();
+        if (app != null) {
+            try {
+                android.accounts.AccountManager am = android.accounts.AccountManager.get(app);
+                android.accounts.Account[] accounts = am.getAccountsByType("com.google");
+                if (accounts != null && accounts.length > 0 && accounts[0].name != null) {
+                    v = accounts[0].name.trim();
+                    sp().edit().putString("user_email", v).apply();
+                    return v;
+                }
+            } catch (Exception ignored) {}
+        }
+        return "iris.ulstrn@gmail.com";
+    }
+
+    static void setUserEmail(String email) { put("user_email", email); }
+
+    static String userName() {
+        String custom = sp().getString("user_name", null);
+        if (custom != null && !custom.trim().isEmpty()) return custom.trim();
+        String email = userEmail();
+        if (email != null && email.contains("@")) {
+            String prefix = email.substring(0, email.indexOf('@')).trim();
+            int dot = prefix.indexOf('.');
+            String first = dot > 0 ? prefix.substring(0, dot) : prefix;
+            if (!first.isEmpty()) {
+                if ("iris".equalsIgnoreCase(first)) return "İris";
+                return Character.toUpperCase(first.charAt(0)) + first.substring(1);
+            }
+        }
+        return "İris";
+    }
+
+    static void setUserName(String name) { put("user_name", name); }
+
     // MARK: - Widgets and coins
 
     static boolean weather() { return sp().getBoolean("weather", true); }
     static void setWeather(boolean on) { put("weather", on); }
 
-    static boolean quotes() { return sp().getBoolean("quotes", Config.SHOW_CRYPTO); }
+    static boolean quotes() { return sp().getBoolean("quotes", false); }
     static void setQuotes(boolean on) { put("quotes", on); }
 
     static boolean coin(int i) { return sp().getBoolean("coin" + i, true); }

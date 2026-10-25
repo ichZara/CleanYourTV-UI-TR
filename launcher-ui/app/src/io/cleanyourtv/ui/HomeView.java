@@ -139,12 +139,12 @@ final class HomeView extends ViewGroup implements Choreographer.FrameCallback, H
     private int tab, topIndex, cardIndex;
     private int widgetIndex;    // with TalkBack on, the drawer's weather (0) or quotes (1) card can take the focus
     private List<Recs.Pick> cards = new ArrayList<>();
-    private final Spring[] topFocus = new Spring[7];
-    private final RectF[] topRects = new RectF[7];
+    private final Spring[] topFocus = new Spring[8];
+    private final RectF[] topRects = new RectF[8];
     private final Spring[] cardFocus = new Spring[3];
     private final RectF[] cardRects = new RectF[3];
     private final List<HomeApps.Item> lightButtons = new ArrayList<>();
-    private Paint lTitle, lTab, lTabOn, lCardTitle, lCardMeta, lQuote, lTip, lDate, lClock, lWeather, lClockQuote;
+    private Paint lTitle, lTab, lTabOn, lCardTitle, lCardMeta, lQuote, lTip, lDate, lClock, lWeather, lClockQuote, lTopClock, lTopUser;
     private Shader lightGradient;
 
     // Shelf
@@ -463,9 +463,12 @@ final class HomeView extends ViewGroup implements Choreographer.FrameCallback, H
         motionDirty = true;
     }
 
-    /** The four corner buttons, with their names in the current language. */
+    /** The corner buttons, with their names in the current language. */
     private void makeLightButtons() {
         lightButtons.clear();
+        String profLabel = Prefs.userEmail();
+        if (profLabel == null || profLabel.isEmpty()) profLabel = Ui.tr("Perfil", "Profile");
+        lightButtons.add(HomeApps.action(HomeApps.PROFILE, "profile", profLabel, "person"));
         lightButtons.add(HomeApps.action(HomeApps.EXPLORE, "explore", Ui.tr("Explorar filmes e séries", "Explore movies and shows"), "play"));
         lightButtons.add(HomeApps.action(HomeApps.INPUTS, "inputs", Ui.tr("Entradas HDMI", "HDMI Inputs"), "hdmi"));
         lightButtons.add(HomeApps.action(HomeApps.WIFI, "wifi", Ui.tr("Wi-Fi e Rede", "Wi-Fi & Network"), "wifi"));
@@ -581,6 +584,10 @@ final class HomeView extends ViewGroup implements Choreographer.FrameCallback, H
         lClock.setLetterSpacing(-0.01f);
         lWeather = Ui.text(Ui.medium, 34 * k, L_DIM);
         lClockQuote = Ui.numbers(Ui.medium, 28 * k, L_DIM);
+        lTopClock = Ui.numbers(Ui.medium, 34 * k, L_INK);
+        lTopClock.setTextAlign(Paint.Align.RIGHT);
+        lTopUser = Ui.text(Ui.semibold, 28 * k, L_INK);
+        lTopUser.setTextAlign(Paint.Align.RIGHT);
         lightGradient = null;
         buttonPaint = Ui.text(Ui.semibold, 29 * k, INK);
         capsuleText = Ui.numbers(Ui.medium, 29 * k, 0xF2FFFFFF);
@@ -941,6 +948,8 @@ final class HomeView extends ViewGroup implements Choreographer.FrameCallback, H
         lClock.setColor(tone(L_INK, WHITE));
         lWeather.setColor(tone(L_DIM, 0xFF98989D));
         lClockQuote.setColor(tone(L_DIM, 0xFF98989D));
+        if (lTopClock != null) lTopClock.setColor(tone(L_INK, WHITE));
+        if (lTopUser != null) lTopUser.setColor(tone(L_INK, WHITE));
         staleQuote.setColor(tone(L_FAINT, 0x99FFFFFF));
     }
 
@@ -1702,7 +1711,7 @@ final class HomeView extends ViewGroup implements Choreographer.FrameCallback, H
         heroFocus.target = !sheetOpen && zone == Z_HERO ? 1 : 0;
         if (snap) heroFocus.snap(heroFocus.target);
         boolean topChanged = aim(topFocus, !sheetOpen && zone == Z_TOP ? topIndex : -1, snap);
-        heroChanged |= aim(cardFocus, !sheetOpen && zone == Z_CARDS ? cardIndex : -1, snap) | topChanged;
+        heroChanged |= aim(cardFocus, !sheetOpen && zone == Z_CARDS ? (cardIndex % 3) : -1, snap) | topChanged;
         statusChanged |= topChanged;
         tilesDirty |= snap || tilesChanged;
         statusDirty |= snap || statusChanged;
@@ -2657,7 +2666,8 @@ final class HomeView extends ViewGroup implements Choreographer.FrameCallback, H
             }
         }
         for (Recs.Pick p : recs.wanted()) recs.backdrop(p);   // all three tabs preloaded: switching tabs is instant
-        Backdrop b = cards.isEmpty() ? null : recs.backdrop(cards.get(0));
+        int pageOffset = (cardIndex / 3) * 3;
+        Backdrop b = cards.isEmpty() ? null : recs.backdrop(cards.get(Math.min(pageOffset, cards.size() - 1)));
         if (cards.isEmpty() || b != null) showBackdrop(b);
         heroDirty = true;
         spoken.focusMoved();    // new picks under the focused card
@@ -2666,6 +2676,7 @@ final class HomeView extends ViewGroup implements Choreographer.FrameCallback, H
     private void selectTab(int index) {
         if (index == tab) return;
         tab = index;
+        cardIndex = 0;
         updateCards();
         heroDirty = true;
     }
@@ -2713,7 +2724,6 @@ final class HomeView extends ViewGroup implements Choreographer.FrameCallback, H
         applyTone();
         if (!picksOn()) {
             drawClock(c);
-            if (HomeData.coinCount() > 0) drawQuotes(c);
             return;
         }
         String hello = Ui.tr("Para você", "For You");
@@ -2742,11 +2752,16 @@ final class HomeView extends ViewGroup implements Choreographer.FrameCallback, H
             if (i == tab) lTabOn.setColor(blend(tone(L_INK, WHITE), L_INK, focus));   // always dark on the white pill
             c.drawText(tabs()[i], r.centerX() - p.measureText(tabs()[i]) / 2, r.centerY() + Ui.halfCap(p), p);
         }
+        if (cards.size() > 3 && lCardMeta != null) {
+            int curPage = (cardIndex / 3) + 1;
+            int totalPages = (cards.size() + 2) / 3;
+            String pageStr = curPage + " / " + totalPages;
+            c.drawText(pageStr, topRects[2].right + 24 * k, topRects[2].centerY() + Ui.halfCap(lCardMeta), lCardMeta);
+        }
         int top = -1;
         for (int i = 0; i < 3; i++) if (cardFocus[i].value > 0.02f && (top < 0 || cardFocus[i].value > cardFocus[top].value)) top = i;
         for (int i = 0; i < 3; i++) if (i != top) drawLightCard(c, i);
         if (top >= 0) drawLightCard(c, top);
-        if (HomeData.coinCount() > 0) drawQuotes(c);
     }
 
     private boolean picksOn() {
@@ -2784,7 +2799,9 @@ final class HomeView extends ViewGroup implements Choreographer.FrameCallback, H
      */
     private void drawLightCard(Canvas c, int i) {
         RectF base = cardRects[i];
-        Recs.Pick p = i < cards.size() ? cards.get(i) : null;
+        int pageOffset = (cardIndex / 3) * 3;
+        int itemIndex = pageOffset + i;
+        Recs.Pick p = itemIndex < cards.size() ? cards.get(itemIndex) : null;
         float v = cardFocus[i].value, f = Ui.clamp(v), s = 1 + 0.05f * v;
         float bw = base.width(), bh = base.height(), r0 = 18 * k;
         float cx = base.centerX(), cy = base.centerY() - 6 * k * v;
@@ -2850,6 +2867,31 @@ final class HomeView extends ViewGroup implements Choreographer.FrameCallback, H
      */
     private void drawLightButtons(Canvas c) {
         applyTone();
+        float cursorX = (topRects.length > 3 && topRects[3] != null && topRects[3].width() > 0)
+                ? topRects[3].left - 24 * k
+                : CONTENT_R * k - 420 * k;
+        float textY = (L_BUTTON_CY + 11) * k;
+
+        // 1. Immediately left of profile button: Gmail profile name
+        String user = Prefs.userName();
+        if (user != null && !user.isEmpty() && lTopUser != null) {
+            c.drawText(user, cursorX, textY, lTopUser);
+            cursorX -= lTopUser.measureText(user) + 24 * k;
+        }
+
+        // 2. Left of name: Clock
+        if (!clockText.isEmpty() && lTopClock != null) {
+            c.drawText(clockText, cursorX, textY, lTopClock);
+            cursorX -= lTopClock.measureText(clockText) + 24 * k;
+        }
+
+        // 3. Left of clock: Weather
+        HomeData.Weather wx = data.weather;
+        if (Prefs.weather() && !Double.isNaN(wx.temp) && lTopClock != null) {
+            String tempText = HomeData.degrees(wx.temp);
+            c.drawText(tempText, cursorX, textY, lTopClock);
+        }
+
         for (int i = 0; i < lightButtons.size(); i++) {
             RectF r = topRects[3 + i];
             float f = Ui.clamp(topFocus[3 + i].value), s = 1 + 0.1f * f, rad = r.width() / 2 * s;
@@ -2886,20 +2928,26 @@ final class HomeView extends ViewGroup implements Choreographer.FrameCallback, H
                     topIndex = picksOn() ? tab : 3;
                 } else {
                     zone = Z_CARDS;
-                    cardIndex = nearest(cardRects, cards.size(), tileRects[shelfIndex].centerX());
+                    cardIndex = (cardIndex / 3) * 3 + nearest(cardRects, Math.min(3, cards.size()), tileRects[shelfIndex].centerX());
                 }
                 break;
             case Z_CARDS:
                 if (dx != 0) {
                     int next = Math.max(0, Math.min(cards.size() - 1, cardIndex + dx));
                     if (next == cardIndex) return true;
+                    int oldPage = cardIndex / 3;
                     cardIndex = next;
+                    int newPage = cardIndex / 3;
+                    if (oldPage != newPage) {
+                        Backdrop b = cards.isEmpty() ? null : recs.backdrop(cards.get(newPage * 3));
+                        if (b != null) showBackdrop(b);
+                    }
                 } else if (dy < 0) {
                     zone = Z_TOP;
                     topIndex = tab;     // as on Apple TV: moving up to the tabs focuses the selected tab
                 } else {
                     zone = Z_SHELF;
-                    if (!shelf.isEmpty()) shelfIndex = nearest(tileRects, tileRects.length, cardRects[cardIndex].centerX());
+                    if (!shelf.isEmpty()) shelfIndex = nearest(tileRects, tileRects.length, cardRects[cardIndex % 3].centerX());
                 }
                 break;
             case Z_TOP:
@@ -2913,7 +2961,7 @@ final class HomeView extends ViewGroup implements Choreographer.FrameCallback, H
                         zone = Z_SHELF;
                     } else {
                         zone = Z_CARDS;
-                        cardIndex = nearest(cardRects, cards.size(), topRects[topIndex].centerX());
+                        cardIndex = (cardIndex / 3) * 3 + nearest(cardRects, Math.min(3, cards.size()), topRects[topIndex].centerX());
                     }
                 } else if (topIndex < 3) {
                     topIndex = 3;   // up from the tabs: the Explore button, the first of the round ones

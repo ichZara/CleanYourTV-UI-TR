@@ -56,7 +56,7 @@ final class HomeApps {
 
     static final int APP = 0, LIVE_TV = 1, INPUT = 2, ALL_APPS = 3, SETTINGS = 4, ANDROID_SETTINGS = 5;
     /** The "HDMI Inputs" button: opens the bottom drawer on the inputs (the home screen handles it). */
-    static final int INPUTS = 7, EXPLORE = 8, WIFI = 9;
+    static final int INPUTS = 7, EXPLORE = 8, WIFI = 9, PROFILE = 10;
     /** Image size of each card (16:9; on screen it shows up to ~330 px wide). */
     static final int TILE_W = 384, TILE_H = 216;
 
@@ -390,6 +390,9 @@ final class HomeApps {
             case WIFI:
                 intent = wifiSettings(a);
                 break;
+            case PROFILE:
+                intent = profileSettings(a);
+                break;
             case EXPLORE:
                 intent = new Intent().setComponent(new ComponentName(a, ExploreActivity.class));
                 break;
@@ -411,6 +414,15 @@ final class HomeApps {
      * Live TV: tune the antenna input directly. MediaTek TV Center otherwise restores the last source used, which can
      * be HDMI, so its explicit activity receives the tuner URI. Other TV apps keep the standard channel-list request.
      */
+    static Intent profileSettings(Context c) {
+        PackageManager pm = c.getPackageManager();
+        Intent tvAcc = new Intent().setComponent(new ComponentName("com.android.tv.settings", "com.google.android.tv.settings.AccountActivity"));
+        if (tvAcc.resolveActivity(pm) != null) return tvAcc;
+        Intent sync = new Intent(Settings.ACTION_SYNC_SETTINGS);
+        if (sync.resolveActivity(pm) != null) return sync;
+        return new Intent(Settings.ACTION_SETTINGS);
+    }
+
     static Intent wifiSettings(Context c) {
         PackageManager pm = c.getPackageManager();
         Intent tvNet = new Intent().setComponent(new ComponentName("com.android.tv.settings", "com.android.tv.settings.connectivity.NetworkActivity"));

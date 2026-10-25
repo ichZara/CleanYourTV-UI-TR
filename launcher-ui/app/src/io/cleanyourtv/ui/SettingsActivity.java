@@ -142,7 +142,7 @@ public class SettingsActivity extends Activity {
         private long startedAt, lastNanos, lastSky;
         private int w, h;
         private float k = 1;
-        private Paint title, subtitle, version, rowLabel, rowValue, rowSub, header, cellLabel, cellValue, warn, spinner, white, shadow;
+        private Paint title, subtitle, version, rowLabel, rowValue, rowSub, header, cellLabel, cellValue, warn, spinner, white, shadow, glassRow, glassRim;
         private TextPaint notice;
 
         private final Runnable poll = new Runnable() {
@@ -291,6 +291,11 @@ public class SettingsActivity extends Activity {
             white.setColor(0xFFF5F5F7);
             shadow = new Paint(Paint.ANTI_ALIAS_FLAG);
             shadow.setMaskFilter(new BlurMaskFilter(22 * k, BlurMaskFilter.Blur.NORMAL));
+            glassRow = new Paint(Paint.ANTI_ALIAS_FLAG);
+            glassRow.setStyle(Paint.Style.FILL);
+            glassRim = new Paint(Paint.ANTI_ALIAS_FLAG);
+            glassRim.setStyle(Paint.Style.STROKE);
+            glassRim.setStrokeWidth(1.2f * k);
         }
 
         private int rowCount() {
@@ -320,13 +325,24 @@ public class SettingsActivity extends Activity {
             }
             scene.drawBackground(c);
 
-            // On the left: big symbol, title, description.
+            // Dark smoked glass atmosphere for tvOS settings aesthetic
+            c.drawColor(0xEE161618);
+
+            // On the left: frosted glass plinth for big symbol, title, description
             float cx = 500 * k;
+            if (glassRow != null && glassRim != null) {
+                RectF leftPlinth = new RectF(140 * k, 260 * k, 860 * k, 790 * k);
+                glassRow.setColor(0x28202024);
+                c.drawRoundRect(leftPlinth, 28 * k, 28 * k, glassRow);
+                glassRim.setColor(0x26FFFFFF);
+                c.drawRoundRect(leftPlinth, 28 * k, 28 * k, glassRim);
+            }
+
             Symbols.draw(getContext(), c, "sparkles", cx, 400 * k, 150 * k, 0xEBFFFFFF);
-            c.drawText("CleanYourTV UI", cx, 612 * k, title);
+            c.drawText("CleanYourTV UI (TR)", cx, 612 * k, title);
             c.drawText(Ui.tr("Início e tela de descanso da TV", "Your TV's home screen and screensaver"), cx, 660 * k, subtitle);
             c.drawText(versionName(getContext()), cx, 704 * k, version);
-            c.drawText("Matheus Caldeira · github.com/matheus-caldeira/cleanyourtv-ui", cx, 742 * k, version);
+            c.drawText("ichZara · github.com/ichZara/CleanYourTV-UI-TR", cx, 742 * k, version);
 
             if (screen == MAIN) drawMain(c); else if (screen == PICKER) drawPicker(c); else if (screen == SHELF_EDIT) drawShelfEditor(c); else drawList(c);
         }
@@ -378,20 +394,32 @@ public class SettingsActivity extends Activity {
             return y + 78 * k;
         }
 
-        /** List row: no background; focused, white with a shadow (the Apple TV focus). Returns how focused it is. */
+        /** List row: frosted glass capsule by default; focused, white with a shadow (the Apple TV focus). Returns how focused it is. */
         private float drawRowBackground(Canvas c, int i) {
             float f = Ui.clamp(pop[i].value);
-            if (f > 0.01f) {
+            float r = 18 * k;
+            if (f <= 0.01f) {
+                if (glassRow != null && glassRim != null) {
+                    glassRow.setColor(0x22242428);
+                    c.drawRoundRect(rowRect, r, r, glassRow);
+                    glassRim.setColor(0x26FFFFFF);
+                    c.drawRoundRect(rowRect, r, r, glassRim);
+                }
+            } else {
                 float s = 1 + 0.02f * f;
                 float cx = rowRect.centerX(), cy = rowRect.centerY();
                 tmp.set(cx - rowRect.width() * s / 2, cy - rowRect.height() * s / 2, cx + rowRect.width() * s / 2, cy + rowRect.height() * s / 2);
-                float r = 18 * k * s;
+                float rad = r * s;
+                if (glassRow != null) {
+                    glassRow.setColor(Ui.alpha(0x2EFFFFFF, 1 - f));
+                    c.drawRoundRect(rowRect, r, r, glassRow);
+                }
                 tmp.offset(0, 10 * k * f);
                 shadow.setColor(Ui.alpha(0xFF000000, 0.4f * f));
-                c.drawRoundRect(tmp, r, r, shadow);
+                c.drawRoundRect(tmp, rad, rad, shadow);
                 tmp.offset(0, -10 * k * f);
                 white.setAlpha(Math.round(255 * f));
-                c.drawRoundRect(tmp, r, r, white);
+                c.drawRoundRect(tmp, rad, rad, white);
                 rowRect.set(tmp);
             }
             return f;
@@ -482,9 +510,9 @@ public class SettingsActivity extends Activity {
 
         // MARK: - Home Settings and Remote Buttons
 
-        private static final String[] LANGUAGES = {"auto", "tr", "pt", "en", "es", "de", "ru"}, UNITS = {"auto", "C", "F"}, THEMES = {"auto", "light", "dark"};
-        /** Home Settings: language, temperature, theme, weather, quotes, then one row per coin. */
-        private static final int CITY_ROW = 4, COIN_ROWS = 6;
+        private static final String[] LANGUAGES = {"auto", "tr", "pt", "en", "es", "de", "ru"}, UNITS = {"auto", "C", "F"}, THEMES = {"auto", "light", "dark"}, CLOCK_FORMATS = {"auto", "24h", "12h"};
+        /** Home Settings: language, temperature, theme, sounds, clock format, TV date & time, weather, city, quotes, coins. */
+        private static final int CITY_ROW = 7, COIN_ROWS = 9, DATE_SETTINGS_ROW = 5;
 
         private boolean dollar() {
             return "BRL".equalsIgnoreCase(Config.CURRENCY.trim());
@@ -495,6 +523,9 @@ public class SettingsActivity extends Activity {
             l.add(Ui.tr("Idioma", "Language"));
             l.add(Ui.tr("Temperatura", "Temperature"));
             l.add(Ui.tr("Tema", "Theme"));
+            l.add(Ui.tr("Sons de navegação", "Navigation sounds"));
+            l.add(Ui.tr("Formato do relógio", "Clock format"));
+            l.add(Ui.tr("Data e hora da TV", "TV date and time"));
             l.add(Ui.tr("Widget do clima", "Weather widget"));
             l.add(Ui.tr("Cidade", "City"));
             l.add(Ui.tr("Widget de cotações", "Quotes widget"));
@@ -515,9 +546,13 @@ public class SettingsActivity extends Activity {
             v[1] = unit.equals("C") ? "°C" : unit.equals("F") ? "°F" : Ui.tr("Automática", "Automatic");
             String theme = Prefs.theme();
             v[2] = theme.equals("light") ? Ui.tr("Claro", "Light") : theme.equals("dark") ? Ui.tr("Escuro", "Dark") : Ui.tr("Automático", "Automatic");
-            v[3] = onOff(Prefs.weather());
+            v[3] = onOff(Prefs.sounds());
+            String cf = Prefs.clockFormat();
+            v[4] = cf.equals("24h") ? Ui.tr("24 Horas", "24 Hours") : cf.equals("12h") ? Ui.tr("12 Horas", "12 Hours") : Ui.tr("Automático", "Automatic");
+            v[5] = Ui.tr("Abrir ajustes", "Open settings");
+            v[6] = onOff(Prefs.weather());
             v[CITY_ROW] = !cityStatus.isEmpty() ? cityStatus : Prefs.city().isEmpty() ? "—" : Prefs.city();
-            v[5] = onOff(Prefs.quotes());
+            v[8] = onOff(Prefs.quotes());
             // No quotes widget, nowhere to show prices: the coins read as off (and stay locked) until it is back on.
             for (int i = COIN_ROWS; i < v.length; i++) v[i] = onOff(Prefs.quotes() && Prefs.coin(i - COIN_ROWS));
             return v;
@@ -593,9 +628,18 @@ public class SettingsActivity extends Activity {
                     Prefs.setTheme(THEMES[(at + dir + THEMES.length) % THEMES.length]);
                     break;
                 }
-                case 3: Prefs.setWeather(!Prefs.weather()); break;
+                case 3: Prefs.setSounds(!Prefs.sounds()); break;
+                case 4: {
+                    int at = java.util.Arrays.asList(CLOCK_FORMATS).indexOf(Prefs.clockFormat());
+                    Prefs.setClockFormat(CLOCK_FORMATS[(at + dir + CLOCK_FORMATS.length) % CLOCK_FORMATS.length]);
+                    break;
+                }
+                case DATE_SETTINGS_ROW:
+                    openDateSettings();
+                    break;
+                case 6: Prefs.setWeather(!Prefs.weather()); break;
                 case CITY_ROW: return;
-                case 5: Prefs.setQuotes(!Prefs.quotes()); break;
+                case 8: Prefs.setQuotes(!Prefs.quotes()); break;
                 default:
                     if (!Prefs.quotes()) return;
                     Prefs.setCoin(focus - COIN_ROWS, !Prefs.coin(focus - COIN_ROWS));
@@ -843,6 +887,16 @@ public class SettingsActivity extends Activity {
             c.drawText(line, LIST_X * k + 30 * k, hy, hint);
         }
 
+        private void openDateSettings() {
+            try {
+                getContext().startActivity(new Intent(Settings.ACTION_DATE_SETTINGS).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
+            } catch (Exception e) {
+                try {
+                    getContext().startActivity(new Intent(Settings.ACTION_SETTINGS).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
+                } catch (Exception ignored) {}
+            }
+        }
+
         private void activate() {
             Context c = getContext();
             if (screen == PICKER && pickFor == PICK_CITY) {
@@ -864,6 +918,9 @@ public class SettingsActivity extends Activity {
                 openPicker(keysScroll + focus + 1);
             } else if (screen == HOME_SETTINGS && focus == CITY_ROW) {
                 askCity();
+                return;
+            } else if (screen == HOME_SETTINGS && focus == DATE_SETTINGS_ROW) {
+                openDateSettings();
                 return;
             } else if (screen == HOME_SETTINGS) {
                 adjust(1);

@@ -107,6 +107,12 @@ final class Turkish {
             case "Language": return "Dil";
             case "Temperature": return "Sıcaklık";
             case "Theme": return "Tema";
+            case "Navigation sounds": return "Gezinme sesleri";
+            case "Clock format": return "Saat biçimi";
+            case "TV date and time": return "TV saat ve tarih ayarları";
+            case "Open settings": return "Ayarları aç";
+            case "24 Hours": return "24 Saat";
+            case "12 Hours": return "12 Saat";
             case "Automatic": return "Otomatik";
             case "Light": return "Açık";
             case "Dark": return "Koyu";

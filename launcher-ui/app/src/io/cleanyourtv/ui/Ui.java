@@ -38,8 +38,10 @@ final class Ui {
     private static boolean loaded;
     private static final Rect BOUNDS = new Rect();
     private static final RectF OVAL = new RectF();
+    private static Context app;
 
     static synchronized void init(Context c) {
+        if (c != null) app = c.getApplicationContext();
         if (loaded) return;
         loaded = true;
         AssetManager a = c.getAssets();
@@ -164,10 +166,25 @@ final class Ui {
         return "de".equals(tv.getLanguage()) ? tv : Locale.GERMANY;
     }
 
-    /** "21:47" (in English, "9:47", like the iPhone in the US). */
+    /** "21:47" (in English, "9:47", like the iPhone in the US; respects device 24h setting or user preference). */
     static String clock(long now) {
-        return en ? new SimpleDateFormat("h:mm", Locale.US).format(new Date(now))
-                : new SimpleDateFormat("HH:mm", locale()).format(new Date(now));
+        String fmt = Prefs.clockFormat();
+        if ("24h".equals(fmt)) {
+            return new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date(now));
+        } else if ("12h".equals(fmt)) {
+            return new SimpleDateFormat("h:mm", Locale.getDefault()).format(new Date(now));
+        }
+        boolean is24 = true;
+        if (app != null) {
+            try {
+                is24 = android.text.format.DateFormat.is24HourFormat(app);
+            } catch (Exception ignored) {
+                is24 = !en;
+            }
+        } else {
+            is24 = !en;
+        }
+        return new SimpleDateFormat(is24 ? "HH:mm" : "h:mm", Locale.getDefault()).format(new Date(now));
     }
 
     /** "5:21" (sunrise and sunset; in English, "5:21 AM"). */
