@@ -1,81 +1,57 @@
-# CleanYourTV-UI (TR & EN)
+# CleanYourTV-UI (Türkçe & TMDB Destekli Android TV Başlatıcı)
 
-Lightweight, ad-free, fast, and privacy-first Android TV launcher with TMDB integration.  
-*Hafif, reklamsız, akıcı, gizlilik odaklı ve TMDB destekli Android TV başlatıcısı.*
+Hafif, reklamsız, akıcı ve televizyonunuzun orijinal sistem servislerine zarar vermeyen modern Android TV başlatıcısı (Launcher).
+
+![CleanYourTV-UI Türkçe Ekran Görüntüsü](screenshot.png)
+
+> **Kaynak & Teşekkür (Credits):**  
+> Bu proje, **[Matheus Caldeira (matheus-caldeira/cleanyourtv-ui)](https://github.com/matheus-caldeira/cleanyourtv-ui)** tarafından geliştirilen harika `cleanyourtv-ui` çalışmasının Türkçe yerelleştirilmiş ve Türkiye için optimize edilmiş fork'udur. Matheus Caldeira'ya açık kaynak katkısı için teşekkür ederiz.
 
 ---
 
-## English
+## Bu Sürümde Yapılan Yenilikler
 
-### Overview
-CleanYourTV-UI provides a clean, modern Apple TV & Google TV style launcher experience without bloating system resources or deleting factory Android TV packages.
+- **Tam Türkçe Arayüz:** Ayarlar, menüler, kategoriler, film ve dizi türleri (`Aksiyon & Macera`, `Dizi`, `Film`, `Belgesel` vb.) tamamen Türkçeleştirildi.
+- **TMDB Türkiye Optimizasyonu:** `tr-TR` dil ve `TR` bölge desteği getirildi. Ana sayfadaki 3 vitrin kartında Türkçe yerel başlığı bulunan içerikler önceliklendirildi.
+- **Hava Durumu ve Para Birimi:** Hava durumu durumları Türkçe yapıldı, döviz ve piyasa göstergelerine Türk Lirası (`₺`) eklendi.
+- **Sağ Üst Wi-Fi Hızlı Erişim Butonu:** Ana sayfanın sağ üst köşesine TV'nin kendi Wi-Fi ve Ağ Ayarları ekranını tek tuşla açan özel bir buton eklendi.
+- **Sıfır Debloat:** Televizyonun fabrika servislerini veya orijinal ana ekranını silmez; güvenli bir şekilde varsayılan başlatıcı olarak çalışır.
 
-### Features
-- **Bilingual Interface:** Full Turkish and English localization for all menus, settings, and genres.
-- **TMDB Smart Recommendations (`tr-TR` / `TR`):**
-  - Genre labels in Turkish (`Aksiyon & Macera`, `Dizi`, `Film`, etc.).
-  - Prioritizes localized titles on the 3 main showcase cards.
-- **Dedicated Top-Right Wi-Fi Icon:** One-click instant access to TV's native Wi-Fi & network settings (`NetworkActivity`).
-- **Zero Debloat Philosophy:** Does not delete or break system packages; seamlessly integrates as standard default launcher via `cmd package set-home-activity`.
-- **Low Memory & Battery Friendly:** No telemetry, background tracking, or heavy animation overhead.
+---
 
-### Installation
-1. Build or get `CleanYourTV-UI.apk`:
+## Kurulum
+
+1. APK'yı derleyin:
    ```bash
    cd launcher-ui
    ./build.sh
    ```
-2. Install via ADB:
+
+2. ADB ile televizyonunuza yükleyin:
    ```bash
-   adb connect <TV_IP_ADDRESS>:5555
+   adb connect <TV_IP_ADRESI>:5555
    adb install -r CleanYourTV-UI.apk
    ```
-3. Set as default home launcher:
+
+3. Varsayılan ana ekran olarak ayarlayın:
    ```bash
    adb shell cmd package set-home-activity io.cleanyourtv.ui/.HomeActivity
    ```
 
-### Optional TMDB Configuration
-Edit `launcher-ui/config.properties`:
+---
+
+## Yapılandırma (`config.properties`)
+
+İsteğe bağlı olarak `launcher-ui/config.properties` dosyasına kendi ücretsiz TMDB API anahtarınızı tanımlayabilirsiniz:
+
 ```properties
-tmdb.key=YOUR_TMDB_API_KEY
+tmdb.key=BURAYA_TMDB_API_KEY
 language=tr
 region=TR
 ```
 
 ---
 
-## Türkçe
+## Lisans
 
-### Genel Bakış
-CleanYourTV-UI, orijinal televizyon sistem servislerini devre dışı bırakmadan (`no debloat`), modern Google TV ve Apple TV benzeri kart ve öneri yapısı sunan ultra hafif bir başlatıcıdır.
-
-### Özellikler
-- **Tam Türkçe Arayüz:** Tüm ayarlar, menüler, kategoriler ve hava durumu bilgileri Türkçeleştirildi.
-- **TMDB Entegrasyonu (`tr-TR` / `TR`):**
-  - Film ve dizi türleri Türkçe (`Aksiyon & Macera`, `Dizi`, `Film` vb.).
-  - Ana ekrandaki vitrin kartlarında yerelleştirilmiş Türkçe başlıklar önceliklendirilir.
-- **Sağ Üst Wi-Fi & Ağ Hızlı Erişim İkonu:** TV'nin yerel ağ ve kablosuz bağlantı ayarlarını (`NetworkActivity`) tek tıkla açan özel buton.
-- **Sıfır Donma & Minimum RAM Tüketimi:** Gereksiz arka plan servisleri veya telemetri barındırmaz.
-- **Güvenli Varsayılan:** Orijinal başlatıcıyı silmez veya bozmaz; Android TV standart `cmd package set-home-activity` ile çalışır.
-
-### Kurulum
-1. Derleyin:
-   ```bash
-   cd launcher-ui
-   ./build.sh
-   ```
-2. ADB üzerinden televizyonunuza yükleyin:
-   ```bash
-   adb connect <TV_IP_ADRESI>:5555
-   adb install -r CleanYourTV-UI.apk
-   ```
-3. Varsayılan ana ekran yapın:
-   ```bash
-   adb shell cmd package set-home-activity io.cleanyourtv.ui/.HomeActivity
-   ```
-
----
-
-## License / Lisans
-Open source, based on `cleanyourtv-ui`.
+Açık kaynaklıdır. Orijinal `matheus-caldeira/cleanyourtv-ui` lisansına tabidir.
