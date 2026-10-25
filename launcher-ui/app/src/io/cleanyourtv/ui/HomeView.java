@@ -2665,8 +2665,10 @@ final class HomeView extends ViewGroup implements Choreographer.FrameCallback, H
                 retarget(false);
             }
         }
-        for (Recs.Pick p : recs.wanted()) recs.backdrop(p);   // all three tabs preloaded: switching tabs is instant
         int pageOffset = (cardIndex / 3) * 3;
+        for (int i = pageOffset; i < Math.min(pageOffset + 3, cards.size()); i++) {
+            recs.backdrop(cards.get(i));
+        }
         Backdrop b = cards.isEmpty() ? null : recs.backdrop(cards.get(Math.min(pageOffset, cards.size() - 1)));
         if (cards.isEmpty() || b != null) showBackdrop(b);
         heroDirty = true;
