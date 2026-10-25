@@ -4,7 +4,7 @@
 - `CleanYourTV-UI` (`io.cleanyourtv.ui`) default launcher olarak aktif ve kusursuz çalışıyor.
 - Öneri kartlarında sayfalama ve sağ/sol gezinme okları (`‹  2 / 8  ›` ve kenar okları) eklendi.
 - Çekmece açılırken ve gezinirken öneri kartları ve ekran bileşenleri senkronize şekilde kayar, metin çakışması ve ani kaybolma giderildi.
-- Profil butonu doğrudan Android TV'nin "Hesaplar ve oturum açma" (iris.ulstrn@gmail.com) ekranına yönlendiriyor.
+- Profil butonu doğrudan Android TV'nin "Hesaplar ve oturum açma" ekranına yönlendiriyor.
 - Ayarlardaki TMDB hesap alanı "TMDB Hesabı · Bağlı değil (İsteğe bağlı)" olarak Türkçeleştirildi; API'nin zaten 24 içeriği bağımsız çektiği kullanıcıya netleştirildi.
 - Sıcaklık Türkiye ve tüm Avrupa'da otomatik Santigrat (°C).
 

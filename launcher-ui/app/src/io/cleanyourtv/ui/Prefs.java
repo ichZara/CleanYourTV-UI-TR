@@ -106,7 +106,7 @@ final class Prefs {
                 }
             } catch (Exception ignored) {}
         }
-        return "iris.ulstrn@gmail.com";
+        return null;
     }
 
     static void setUserEmail(String email) { put("user_email", email); }
@@ -114,17 +114,7 @@ final class Prefs {
     static String userName() {
         String custom = sp().getString("user_name", null);
         if (custom != null && !custom.trim().isEmpty()) return custom.trim();
-        String email = userEmail();
-        if (email != null && email.contains("@")) {
-            String prefix = email.substring(0, email.indexOf('@')).trim();
-            int dot = prefix.indexOf('.');
-            String first = dot > 0 ? prefix.substring(0, dot) : prefix;
-            if (!first.isEmpty()) {
-                if ("iris".equalsIgnoreCase(first)) return "İris";
-                return Character.toUpperCase(first.charAt(0)) + first.substring(1);
-            }
-        }
-        return "İris";
+        return null;
     }
 
     static void setUserName(String name) { put("user_name", name); }
