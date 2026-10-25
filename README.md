@@ -9,6 +9,13 @@ Hafif, reklamsız, akıcı ve televizyonunuzun orijinal sistem servislerine zara
 
 ---
 
+## Uyumluluk ve Test Edilen Modeller
+
+- **Bizzat Test Edilip Doğrulanan Model:** **Philips 58PUS8507/12 (58PUS8507/62, Android TV 11)** üzerinde tüm fonksiyonlarıyla (TMDB kartları, Türkçe arayüz, hızlı Wi-Fi ayar geçişi, akıcı kumanda navigasyonu) test edilmiş ve sıfır donma/kararlılık ile çalıştığı doğrulanmıştır.
+- **Genel Uyumluluk:** Android TV 9, 10, 11, 12, 13 ve 14 çalıştıran **tüm akıllı televizyon ve TV Box cihazlarında** (Sony, Philips, TCL, Xiaomi Mi Box / TV Stick, Chromecast with Google TV vb.) sorunsuz çalışır.
+
+---
+
 ## Bu Sürümde Yapılan Yenilikler
 
 - **Tam Türkçe Arayüz:** Ayarlar, menüler, kategoriler, film ve dizi türleri (`Aksiyon & Macera`, `Dizi`, `Film`, `Belgesel` vb.) tamamen Türkçeleştirildi.
@@ -21,19 +28,15 @@ Hafif, reklamsız, akıcı ve televizyonunuzun orijinal sistem servislerine zara
 
 ## Kurulum
 
-1. APK'yı derleyin:
-   ```bash
-   cd launcher-ui
-   ./build.sh
-   ```
+Doğrudan [Releases](https://github.com/ichZara/CleanYourTV-UI-TR/releases) sayfasından hazır derlenmiş `CleanYourTV-UI.apk` dosyasını indirebilirsiniz.
 
-2. ADB ile televizyonunuza yükleyin:
+1. ADB ile televizyonunuza yükleyin:
    ```bash
    adb connect <TV_IP_ADRESI>:5555
    adb install -r CleanYourTV-UI.apk
    ```
 
-3. Varsayılan ana ekran olarak ayarlayın:
+2. Varsayılan ana ekran olarak ayarlayın:
    ```bash
    adb shell cmd package set-home-activity io.cleanyourtv.ui/.HomeActivity
    ```
