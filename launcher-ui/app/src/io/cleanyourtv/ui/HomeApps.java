@@ -416,8 +416,8 @@ final class HomeApps {
      */
     static Intent profileSettings(Context c) {
         PackageManager pm = c.getPackageManager();
-        Intent tvAcc = new Intent().setComponent(new ComponentName("com.android.tv.settings", "com.google.android.tv.settings.AccountActivity"));
-        if (tvAcc.resolveActivity(pm) != null) return tvAcc;
+        Intent main = new Intent().setComponent(new ComponentName("com.android.tv.settings", "com.android.tv.settings.MainSettings"));
+        if (main.resolveActivity(pm) != null) return main;
         Intent sync = new Intent(Settings.ACTION_SYNC_SETTINGS);
         if (sync.resolveActivity(pm) != null) return sync;
         return new Intent(Settings.ACTION_SETTINGS);
