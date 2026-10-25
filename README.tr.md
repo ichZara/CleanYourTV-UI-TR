@@ -18,6 +18,15 @@ Orijinal televizyon sistem servislerini devre dışı bırakmadan (`no debloat`)
 
 ---
 
+## Cihaz Uyumluluk Bildirimi
+
+- **Bizzat Test Edilip Doğrulanan Model:**  
+  **Philips 58PUS8507/12 (58PUS8507/62, Android TV 11)** — TMDB öneri kartları, Türkçe menüler, sağ üst dijital saat ve sıcaklık göstergesi, Wi-Fi hızlı ayar butonu ve akıcı kumanda navigasyonu test edilmiş ve tam kararlılıkla çalıştığı doğrulanmıştır.
+- **Diğer Cihazlar:**  
+  Android TV 9, 10, 11, 12, 13 ve 14 çalıştıran tüm akıllı televizyon ve TV kutuları (Sony, TCL, Xiaomi Mi Box / TV Stick, Chromecast with Google TV vb.) için uygundur.
+
+---
+
 ## Kurulum
 
 1. Depoyu derleyin veya `CleanYourTV-UI.apk` dosyasını edinin:
