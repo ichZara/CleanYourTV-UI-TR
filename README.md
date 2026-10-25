@@ -26,32 +26,55 @@ Hafif, reklamsız, akıcı ve televizyonunuzun orijinal sistem servislerine zara
 
 ---
 
-## Kurulum
+## Adım Adım Kurulum Rehberi
 
-Doğrudan [Releases](https://github.com/ichZara/CleanYourTV-UI-TR/releases) sayfasından hazır derlenmiş `CleanYourTV-UI.apk` dosyasını indirebilirsiniz.
+Kurulumu ister aşağıdaki adımları izleyerek yapabilir, isterseniz hazır yapay zeka (AI) promptunu ChatGPT / Claude / Gemini'ye kopyalayarak tüm kurulumu ona yaptırabilirsiniz.
 
-1. ADB ile televizyonunuza yükleyin:
-   ```bash
-   adb connect <TV_IP_ADRESI>:5555
-   adb install -r CleanYourTV-UI.apk
-   ```
+### 1. Televizyonda Geliştirici Seçenekleri ve Hata Ayıklamayı Açma
+1. Televizyonunuzda **Ayarlar (Settings)** -> **Cihaz Tercihleri** -> **Hakkında** bölümüne gidin.
+2. En altta bulunan **Android TV Derlemesi (Build)** seçeneğine gelin ve kumandanın **OK (Orta)** tuşuna arka arkaya **7 kez** hızlıca basın. Ekranda *"Artık bir geliştiricisiniz!"* bildirimi çıkacaktır.
+3. Bir önceki menüye dönüp **Geliştirici Seçenekleri**'ne girin.
+4. **USB Hata Ayıklama (USB Debugging)** seçeneğini aktif hale getirin.
+5. TV'nizin IP adresini öğrenin (**Ayarlar** -> **Ağ ve İnternet** -> Bağlı olduğunuz Wi-Fi'ye tıklayın, örn: `192.168.1.50`).
 
-2. Varsayılan ana ekran olarak ayarlayın:
-   ```bash
-   adb shell cmd package set-home-activity io.cleanyourtv.ui/.HomeActivity
-   ```
+### 2. Uygulamayı Televizyona Yükleme ve Varsayılan Yapma
+[Releases](https://github.com/ichZara/CleanYourTV-UI-TR/releases) sayfasından indirdiğiniz `CleanYourTV-UI.apk` dosyasını ADB ile yükleyin:
+
+```bash
+# 1. Televizyona kablosuz bağlanın:
+adb connect <TELEVIZYON_IP_ADRESI>:5555
+# (Televizyon ekranında 'Bu bilgisayara her zaman izin verilsin mi?' kutucuğu çıkar, kumandayla 'Her zaman izin ver'i işaretleyip OK deyin)
+
+# 2. APK'yı yükleyin:
+adb install -r CleanYourTV-UI.apk
+
+# 3. Televizyonun varsayılan ana ekranı (Home) yapın:
+adb shell cmd package set-home-activity io.cleanyourtv.ui/.HomeActivity
+```
+
+*(İstediğiniz zaman TV Ayarlarından veya kumandanın Home tuşu ayarlarından fabrika ana ekranına geri dönebilirsiniz, orijinal sistem dosyaları asla silinmez).*
 
 ---
 
-## Yapılandırma (`config.properties`)
+## Yapay Zeka (AI) ile Otomatik Kurulum Promptu
 
-İsteğe bağlı olarak `launcher-ui/config.properties` dosyasına kendi ücretsiz TMDB API anahtarınızı tanımlayabilirsiniz:
+ADB komutlarıyla uğraşmak istemiyorsanız, aşağıdaki metni kopyalayıp kullandığınız yapay zekaya yapıştırın:
 
-```properties
-tmdb.key=BURAYA_TMDB_API_KEY
-language=tr
-region=TR
+```markdown
+Bilgisayarım ile aynı Wi-Fi ağına bağlı bir Android TV'm var.
+Televizyonumun IP adresi: [BURAYA_TELEVIZYON_IP_ADRESINI_YAZIN]
+İndirdiğim launcher dosyasının yolu: [BURAYA_INDIRILEN_CleanYourTV-UI.apk_DOSYA_YOLUNU_YAZIN]
+
+Lütfen bilgisayarımdan ADB aracılığıyla televizyonuma bağlanıp bu launcher APK'sını kurmamı ve televizyonda varsayılan ana ekran olarak ayarlamamı sağlayan adımları ve komutları çalıştır veya bana sırasıyla yaz.
 ```
+
+---
+
+## Hatalar ve Geri Bildirim / Issue Reporting
+
+Herhangi bir hata, çökme veya görsel sorun yaşarsanız lütfen **[GitHub Issues](https://github.com/ichZara/CleanYourTV-UI-TR/issues)** üzerinden bize bildirin!
+
+Hata bildirirken televizyonunuzun marka/modelini ve Android sürümünü yazmanız sorunun hızla giderilmesini sağlayacaktır.
 
 ---
 
