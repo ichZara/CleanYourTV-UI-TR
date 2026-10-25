@@ -124,3 +124,8 @@ Hata bildirirken televizyonunuzun **markasını, tam model kodunu ve Android sü
 
 ## Lisans
 Açık kaynaklıdır. Orijinal `matheus-caldeira/cleanyourtv-ui` lisansına tabidir.
+
+---
+
+## Diğer Projeler
+Geliştirdiğim diğer açık kaynaklı Android TV ve akıllı ev projelerine göz atmak için **[GitHub Profilimi (@ichZara)](https://github.com/ichZara)** ziyaret edebilirsiniz.
