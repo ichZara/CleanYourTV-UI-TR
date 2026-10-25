@@ -94,7 +94,7 @@ public class ExploreActivity extends Activity {
         {"terror", "Terror", "Horror", "27", null, null, null, null},
         {"novela", "Novelas", "Soaps", null, "10766", null, null, null},
         {"doramas", "Doramas", "K-dramas", null, "18", null, "KR", "ko"},
-        {"nacionais", "Nacionais", "Brazilian", null, null, null, "BR", "pt"},
+        {"nacionais", "Nacionais", "Turkish", null, null, null, "TR", "tr"},
     };
 
     private final Handler main = new Handler(Looper.getMainLooper());
@@ -1381,7 +1381,7 @@ public class ExploreActivity extends Activity {
 
     private static String yearLabel(String y) {
         if (y.equals("old")) return Ui.tr("Antes de 1990", "Before 1990");
-        if (y.endsWith("s")) return Ui.tr("Anos ", "The ") + y.substring(0, 4) + (Ui.tr("", "s"));
+        if (y.endsWith("s")) return Ui.tr ? y.substring(0, 4) + "'ler" : Ui.tr("Anos ", "The ") + y.substring(0, 4) + (Ui.tr("", "s"));
         return y;
     }
 

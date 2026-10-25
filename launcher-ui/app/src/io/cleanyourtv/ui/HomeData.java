@@ -333,6 +333,18 @@ final class HomeData {
     /** The weather in words, from Open-Meteo's WMO code. */
     static String condition(int code, boolean day) {
         if (code < 0) return "";
+        if (Ui.tr) {
+            if (code == 0) return day ? "Güneşli" : "Açık";
+            if (code == 1) return "Az Bulutlu";
+            if (code == 2) return "Parçalı Bulutlu";
+            if (code == 3) return "Bulutlu";
+            if (code == 45 || code == 48) return "Sisli";
+            if (code >= 51 && code <= 57) return "Çisenti";
+            if (code == 65 || code == 67 || code == 82) return "Şiddetli Yağmur";
+            if (code >= 71 && code <= 77 || code == 85 || code == 86) return "Karlı";
+            if (code >= 95) return "Fırtınalı";
+            return "Yağmurlu";
+        }
         if (Ui.en) {
             if (code == 0) return "Clear";
             if (code == 1) return day ? "Mostly Sunny" : "Mostly Clear";
@@ -395,6 +407,7 @@ final class HomeData {
 
     private static String currencySymbol() {
         switch (CURRENCY) {
+            case "TRY": return "₺";
             case "USD": return "$";
             case "BRL": return "R$ ";
             case "EUR": return "€";
@@ -425,7 +438,7 @@ final class HomeData {
 
     static String hour(long at) {
         return Ui.once("hour", at, () -> Ui.en ? new SimpleDateFormat("h a", Locale.US).format(new java.util.Date(at))
-                : new SimpleDateFormat(Ui.es || Ui.ru ? "HH:mm" : Ui.de ? "HH 'Uhr'" : "HH'h'", Ui.locale()).format(new java.util.Date(at)));
+                : new SimpleDateFormat(Ui.tr || Ui.es || Ui.ru ? "HH:mm" : Ui.de ? "HH 'Uhr'" : "HH'h'", Ui.locale()).format(new java.util.Date(at)));
     }
 
     /** How long ago the data was fetched, if it's stale (no internet): "12 min ago". */
@@ -434,6 +447,7 @@ final class HomeData {
         long age = System.currentTimeMillis() - at;
         if (age < every * 2) return "";
         long minutes = age / 60_000;
+        if (Ui.tr) return minutes < 60 ? minutes + " dk önce" : (minutes / 60) + " sa önce";
         if (Ui.en) return minutes < 60 ? minutes + " min ago" : (minutes / 60) + " h ago";
         if (Ui.ru) return minutes < 60 ? minutes + " мин назад" : (minutes / 60) + " ч назад";
         if (Ui.es) return minutes < 60 ? "hace " + minutes + " min" : "hace " + (minutes / 60) + " h";

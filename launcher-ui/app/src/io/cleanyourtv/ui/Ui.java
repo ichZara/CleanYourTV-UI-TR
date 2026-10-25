@@ -29,10 +29,11 @@ final class Ui {
     static final boolean LEGACY = Build.VERSION.SDK_INT < 31;
     static final Locale RU = new Locale("ru", "RU");
     static final Locale PT = new Locale("pt", "BR");
-    /** English, Portuguese, Spanish, German or Russian, from the settings or, with "auto", the TV's own language. */
+    static final Locale TR = new Locale("tr", "TR");
+    /** English, Portuguese, Spanish, German, Russian or Turkish, from the settings or, with "auto", the TV's own language. */
     static volatile String language = language();
     static volatile boolean en = "en".equals(language), es = "es".equals(language), de = "de".equals(language),
-            ru = "ru".equals(language);
+            ru = "ru".equals(language), tr = "tr".equals(language);
     static Typeface thin, light, displayMedium, displaySemibold, regular, medium, semibold;
     private static boolean loaded;
     private static final Rect BOUNDS = new Rect();
@@ -66,12 +67,12 @@ final class Ui {
 
     private static final String FONT = "fonts/InterVariable.ttf";
 
-    /** "pt", "es", "de", "ru" or "en": the one picked (TV settings or config.properties), or with "auto" the TV's own, else English. */
+    /** "pt", "es", "de", "ru", "tr" or "en": the one picked (TV settings or config.properties), or with "auto" the TV's own, else English. */
     private static String language() {
         String lang = Prefs.language();
         if (!lang.equals("auto")) return lang;
         lang = Locale.getDefault().getLanguage();
-        return "pt".equals(lang) || "es".equals(lang) || "de".equals(lang) || "ru".equals(lang) ? lang : "en";
+        return "pt".equals(lang) || "es".equals(lang) || "de".equals(lang) || "ru".equals(lang) || "tr".equals(lang) ? lang : "en";
     }
 
     /** After the language changes in the settings (and once Prefs can read them). */
@@ -81,6 +82,7 @@ final class Ui {
         es = "es".equals(language);
         de = "de".equals(language);
         ru = "ru".equals(language);
+        tr = "tr".equals(language);
     }
 
     private static boolean has(AssetManager a, String path) {
@@ -138,16 +140,16 @@ final class Ui {
     }
 
     static String tr(String pt, String english) {
-        return de ? German.text(english) : ru ? Russian.text(english) : es ? Spanish.text(english) : en ? english : pt;
+        return tr ? Turkish.text(english) : de ? German.text(english) : ru ? Russian.text(english) : es ? Spanish.text(english) : en ? english : pt;
     }
 
-    /** German comes from German.java here too (keyed by the English, with patterns for text built at runtime). */
+    /** German and Turkish come from their files here too (keyed by English). */
     static String tr(String pt, String english, String spanish) {
-        return de ? German.text(english) : ru ? Russian.text(english) : es ? spanish : en ? english : pt;
+        return tr ? Turkish.text(english) : de ? German.text(english) : ru ? Russian.text(english) : es ? spanish : en ? english : pt;
     }
 
     static Locale locale() {
-        return ru ? RU : es ? spanish() : de ? german() : en ? Locale.US : PT;
+        return tr ? TR : ru ? RU : es ? spanish() : de ? german() : en ? Locale.US : PT;
     }
 
     /** The TV's own Spanish (es-MX, es-AR…) when it is in Spanish, Spain's otherwise. */

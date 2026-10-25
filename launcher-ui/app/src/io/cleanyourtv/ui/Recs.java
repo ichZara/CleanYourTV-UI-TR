@@ -44,7 +44,7 @@ final class Recs {
         int id;
         String kind;            // "movie" or "tv"
         String title, backdrop, meta = "", app, pkg;
-        boolean detailed;
+        boolean detailed, localized;
     }
 
     interface Listener { void onRecs(); }
@@ -53,13 +53,14 @@ final class Recs {
     private static final String IMAGES = "https://image.tmdb.org/t/p/original";
     private static final long LIST_EVERY = 6 * 3600_000L;
     /** Bump when what is saved for each title changes (the saved list is discarded and fetched again). */
-    private static final int CACHE_VERSION = 3;
+    private static final int CACHE_VERSION = 6;
     private static final int MANHA = 0, TARDE = 1, NOITE = 2;
     static final String[] PERIOD_LABEL = {"PARA ESTA MANHÃ", "PARA ESTA TARDE", "PARA ESTA NOITE"};
     static final String[] PERIOD_LABEL_RU = {"ЭТИМ УТРОМ", "СЕГОДНЯ ДНЁМ", "СЕГОДНЯ ВЕЧЕРОМ"};
     static final String[] PERIOD_LABEL_EN = {"THIS MORNING", "THIS AFTERNOON", "TONIGHT"};
     static final String[] PERIOD_LABEL_ES = {"PARA ESTA MAÑANA", "PARA ESTA TARDE", "PARA ESTA NOCHE"};
     static final String[] PERIOD_LABEL_DE = {"HEUTE MORGEN", "HEUTE NACHMITTAG", "HEUTE ABEND"};
+    static final String[] PERIOD_LABEL_TR = {"BU SABAH", "BU ÖĞLEDEN SONRA", "BU AKŞAM"};
     /** Service name on TMDB (part of the name, lowercase) → TV app (HomeApps key, package). */
     private static final String[][] SERVICES = {
         {"netflix", "netflix", "com.netflix.ninja"},
@@ -160,7 +161,7 @@ final class Recs {
     String error() { return error; }
 
     static String periodLabel() {
-        return (Ui.ru ? PERIOD_LABEL_RU : Ui.es ? PERIOD_LABEL_ES : Ui.de ? PERIOD_LABEL_DE : Ui.en ? PERIOD_LABEL_EN : PERIOD_LABEL)
+        return (Ui.tr ? PERIOD_LABEL_TR : Ui.ru ? PERIOD_LABEL_RU : Ui.es ? PERIOD_LABEL_ES : Ui.de ? PERIOD_LABEL_DE : Ui.en ? PERIOD_LABEL_EN : PERIOD_LABEL)
                 [period(System.currentTimeMillis())];
     }
 
@@ -416,6 +417,12 @@ final class Recs {
         List<Pick> newMovies = new ArrayList<>(), newShows = new ArrayList<>();
         for (int i = 0; i < movies.length(); i++) add(newMovies, movies.getJSONObject(i), "movie");
         for (int i = 0; i < shows.length(); i++) add(newShows, shows.getJSONObject(i), "tv");
+        if (!Ui.en) {
+            hotMovies.sort((a, b) -> Boolean.compare(b.localized, a.localized));
+            hotShows.sort((a, b) -> Boolean.compare(b.localized, a.localized));
+            newMovies.sort((a, b) -> Boolean.compare(b.localized, a.localized));
+            newShows.sort((a, b) -> Boolean.compare(b.localized, a.localized));
+        }
         // Trending first, then the new releases; movies and shows alternating, without repeats, up to 24.
         List<Pick> list = new ArrayList<>();
         java.util.Set<String> seen = new java.util.HashSet<>();
@@ -430,6 +437,7 @@ final class Recs {
 
     /** Language of titles and genres; the services come from the region. */
     private static String lang() {
+        if (Ui.tr) return "tr-TR";
         if (Ui.ru) return "ru-RU";
         if (Ui.es) return "ES".equals(java.util.Locale.getDefault().getCountry()) ? "es-ES" : "es-MX";
         if (Ui.de) return "de-DE";   // TMDB's de-AT and de-CH have few translations of their own
@@ -453,19 +461,25 @@ final class Recs {
     private static void add(List<Pick> list, JSONObject o, String kind) {
         String backdrop = o.optString("backdrop_path", "");
         if (backdrop.isEmpty() || "null".equals(backdrop)) return;
+        String field = kind.equals("movie") ? "title" : "name";
         Pick p = new Pick();
         p.id = o.optInt("id");
         p.kind = kind;
-        p.title = o.optString(kind.equals("movie") ? "title" : "name");
+        p.title = o.optString(field);
         p.backdrop = backdrop;
+        p.localized = Ui.language.equals(o.optString("original_language"))
+                || !p.title.equalsIgnoreCase(o.optString("original_" + field));
         list.add(p);
     }
 
     /** Genre, runtime (or seasons) and the service it's on, among the ones the TV has. */
     private void fetchDetails(Pick p) throws Exception {
         JSONObject o = get("/" + p.kind + "/" + p.id
-                + "?language=" + lang() + "&append_to_response=watch/providers,images&include_image_language=null," + Ui.language + ",en");
+                + "?language=" + lang() + "&append_to_response=watch/providers,images,translations&include_image_language=null," + Ui.language + ",en");
         p.title = title(p, o);
+        String field = p.kind.equals("movie") ? "title" : "name";
+        p.localized = Ui.language.equals(o.optString("original_language"))
+                || !p.title.equalsIgnoreCase(o.optString("original_" + field));
         String best = bestBackdrop(o.optJSONObject("images"));
         if (best != null) p.backdrop = best;
         List<String> parts = new ArrayList<>();
@@ -477,12 +491,14 @@ final class Recs {
         }
         if (p.kind.equals("movie")) {
             int minutes = o.optInt("runtime");
-            if (minutes > 0 && Ui.ru) parts.add(minutes >= 60 ? (minutes / 60) + " ч " + (minutes % 60) + " мин" : minutes + " мин");
+            if (minutes > 0 && Ui.tr) parts.add(minutes >= 60 ? (minutes / 60) + " sa " + (minutes % 60) + " dk" : minutes + " dk");
+            else if (minutes > 0 && Ui.ru) parts.add(minutes >= 60 ? (minutes / 60) + " ч " + (minutes % 60) + " мин" : minutes + " мин");
             else if (minutes > 0 && Ui.en) parts.add(minutes >= 60 ? (minutes / 60) + "h " + (minutes % 60) + "m" : minutes + "m");
             else if (minutes > 0) parts.add(minutes >= 60 ? (minutes / 60) + " h " + (minutes % 60) + " min" : minutes + " min");
         } else {
             int seasons = o.optInt("number_of_seasons");
-            if (seasons > 0 && Ui.ru) parts.add(Russian.count(seasons, "сезон", "сезона", "сезонов"));
+            if (seasons > 0 && Ui.tr) parts.add(seasons + " sezon");
+            else if (seasons > 0 && Ui.ru) parts.add(Russian.count(seasons, "сезон", "сезона", "сезонов"));
             else if (seasons > 0 && Ui.en) parts.add(seasons == 1 ? "1 season" : seasons + " seasons");
             else if (seasons > 0 && Ui.de) parts.add(seasons == 1 ? "1 Staffel" : seasons + " Staffeln");
             else if (seasons > 0) parts.add(seasons == 1 ? "1 temporada" : seasons + " temporadas");
@@ -511,8 +527,24 @@ final class Recs {
     private String title(Pick p, JSONObject o) {
         String field = p.kind.equals("movie") ? "title" : "name";
         String own = o.optString(field, p.title);
+        String origTitle = o.optString("original_" + field);
         String original = o.optString("original_language");
-        if (Ui.en || own.isEmpty() || !own.equals(o.optString("original_" + field))
+        if (!Ui.en && (own.isEmpty() || own.equals(origTitle))) {
+            JSONObject trObj = o.optJSONObject("translations");
+            JSONArray trList = trObj == null ? null : trObj.optJSONArray("translations");
+            for (int i = 0; trList != null && i < trList.length(); i++) {
+                JSONObject item = trList.optJSONObject(i);
+                if (item != null && Ui.language.equalsIgnoreCase(item.optString("iso_639_1"))) {
+                    JSONObject data = item.optJSONObject("data");
+                    String localized = data == null ? "" : data.optString(field).trim();
+                    if (!localized.isEmpty()) {
+                        own = localized;
+                        break;
+                    }
+                }
+            }
+        }
+        if (Ui.en || own.isEmpty() || !own.equals(origTitle)
                 || Ui.language.equals(original) || "en".equals(original)) return own;
         try {
             String english = get("/" + p.kind + "/" + p.id + "?language=en-US").optString(field);
@@ -537,10 +569,15 @@ final class Recs {
         {"Action & Adventure", "Action & Abenteuer"}, {"War & Politics", "Krieg & Politik"}, {"Kids", "Kinder"},
         {"News", "Nachrichten"}, {"Soap", "Seifenoper"}, {"Talk", "Talkshow"},
     };
+    private static final String[][] GENRES_TR = {
+        {"Action & Adventure", "Aksiyon & Macera"}, {"Sci-Fi & Fantasy", "Bilim Kurgu & Fantastik"},
+        {"War & Politics", "Savaş & Politika"}, {"Kids", "Çocuk"}, {"News", "Haberler"},
+        {"Soap", "Dizi"}, {"Talk", "Sohbet & Talk Show"},
+    };
 
     private static String genre(String name) {
         if (Ui.ru) return Russian.text(name);
-        for (String[] g : Ui.es ? GENRES_ES : Ui.de ? GENRES_DE : GENRES_PT) if (g[0].equalsIgnoreCase(name)) return g[1];
+        for (String[] g : Ui.tr ? GENRES_TR : Ui.es ? GENRES_ES : Ui.de ? GENRES_DE : GENRES_PT) if (g[0].equalsIgnoreCase(name)) return g[1];
         return name;
     }
 

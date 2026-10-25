@@ -55,6 +55,7 @@ final class Tmdb {
     /** TMDB's language for the app's: titles, overviews and logos in it when TMDB has them. */
     static String lang() {
         switch (Ui.language) {
+            case "tr": return "tr-TR";
             case "pt": return "pt-BR";
             case "es": return "es-ES";
             case "de": return "de-DE";
