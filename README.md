@@ -9,10 +9,13 @@ Hafif, reklamsız, akıcı ve televizyonunuzun orijinal sistem servislerine zara
 
 ---
 
-## Uyumluluk ve Test Edilen Modeller
+## Uyumluluk ve Test Edilen Modeller / Device Compatibility
 
-- **Bizzat Test Edilip Doğrulanan Model:** **Philips 58PUS8507/12 (58PUS8507/62, Android TV 11)** üzerinde tüm fonksiyonlarıyla (TMDB kartları, Türkçe arayüz, hızlı Wi-Fi ayar geçişi, akıcı kumanda navigasyonu) test edilmiş ve sıfır donma/kararlılık ile çalıştığı doğrulanmıştır.
-- **Genel Uyumluluk:** Android TV 9, 10, 11, 12, 13 ve 14 çalıştıran **tüm akıllı televizyon ve TV Box cihazlarında** (Sony, Philips, TCL, Xiaomi Mi Box / TV Stick, Chromecast with Google TV vb.) sorunsuz çalışır.
+- **Bizzat Test Edilip Doğrulanan Model:**  
+  **Philips 58PUS8507/12 (58PUS8507/62, Android TV 11)** — TMDB öneri kartları, Türkçe menüler, sağ üst Wi-Fi hızlı ayar butonu ve akıcı kumanda navigasyonu test edilip tam kararlılıkla çalıştığı doğrulanmıştır.
+- **Diğer Android TV & TV Box Cihazları:**  
+  Android TV 9, 10, 11, 12, 13 ve 14 çalıştıran televizyon ve TV kutuları (Sony, TCL, Xiaomi Mi Box, Chromecast with Google TV vb.) için uygundur.  
+  *Farklı üreticilerin launcher kısıtlamaları veya özel arayüzleri nedeniyle tüm cihazlarda %100 uyumluluk garanti edilemez; lütfen cihazınızda deneyip geri bildirimde bulunun.*
 
 ---
 
@@ -28,14 +31,11 @@ Hafif, reklamsız, akıcı ve televizyonunuzun orijinal sistem servislerine zara
 
 ## Adım Adım Kurulum Rehberi
 
-Kurulumu ister aşağıdaki adımları izleyerek yapabilir, isterseniz hazır yapay zeka (AI) promptunu ChatGPT / Claude / Gemini'ye kopyalayarak tüm kurulumu ona yaptırabilirsiniz.
-
-### 1. Televizyonda Geliştirici Seçenekleri ve Hata Ayıklamayı Açma
-1. Televizyonunuzda **Ayarlar (Settings)** -> **Cihaz Tercihleri** -> **Hakkında** bölümüne gidin.
-2. En altta bulunan **Android TV Derlemesi (Build)** seçeneğine gelin ve kumandanın **OK (Orta)** tuşuna arka arkaya **7 kez** hızlıca basın. Ekranda *"Artık bir geliştiricisiniz!"* bildirimi çıkacaktır.
-3. Bir önceki menüye dönüp **Geliştirici Seçenekleri**'ne girin.
-4. **USB Hata Ayıklama (USB Debugging)** seçeneğini aktif hale getirin.
-5. TV'nizin IP adresini öğrenin (**Ayarlar** -> **Ağ ve İnternet** -> Bağlı olduğunuz Wi-Fi'ye tıklayın, örn: `192.168.1.50`).
+### 1. Televizyonda ADB Hata Ayıklamayı Açma
+1. TV'de **Ayarlar (Settings)** -> **Cihaz Tercihleri** -> **Hakkında** yolunu izleyin.
+2. **Android TV Derlemesi (Build)** seçeneğine kumandanın **OK** tuşuyla **7 kez** arka arkaya basın (*"Artık bir geliştiricisiniz"* bildirimi çıkana kadar).
+3. Geri gelip **Geliştirici Seçenekleri** menüsüne girin ve **USB Hata Ayıklama (USB Debugging)** seçeneğini açın.
+4. **Ayarlar** -> **Ağ ve İnternet** kısmından TV'nizin yerel IP adresini not edin (örnek: `192.168.1.50`).
 
 ### 2. Uygulamayı Televizyona Yükleme ve Varsayılan Yapma
 [Releases](https://github.com/ichZara/CleanYourTV-UI-TR/releases) sayfasından indirdiğiniz `CleanYourTV-UI.apk` dosyasını ADB ile yükleyin:
@@ -52,21 +52,25 @@ adb install -r CleanYourTV-UI.apk
 adb shell cmd package set-home-activity io.cleanyourtv.ui/.HomeActivity
 ```
 
-*(İstediğiniz zaman TV Ayarlarından veya kumandanın Home tuşu ayarlarından fabrika ana ekranına geri dönebilirsiniz, orijinal sistem dosyaları asla silinmez).*
+*(Orijinal TV ana ekranına dönmek isterseniz istediğiniz an TV ayarlarından başlatıcıyı değiştirebilirsiniz, hiçbir sistem dosyası silinmez).*
 
 ---
 
-## Yapay Zeka (AI) ile Otomatik Kurulum Promptu
+## Yapay Zeka (AI) ile Otomatik Kurulum Promptu / AI Prompt for Setup
 
-ADB komutlarıyla uğraşmak istemiyorsanız, aşağıdaki metni kopyalayıp kullandığınız yapay zekaya yapıştırın:
+Aşağıdaki hazır promptu kopyalayıp kullandığınız yapay zeka asistanına (ChatGPT, Claude, Gemini veya terminal AI aracınıza) vererek kurulumu baştan sona ona yaptırabilirsiniz:
 
-```markdown
-Bilgisayarım ile aynı Wi-Fi ağına bağlı bir Android TV'm var.
-Televizyonumun IP adresi: [BURAYA_TELEVIZYON_IP_ADRESINI_YAZIN]
-İndirdiğim launcher dosyasının yolu: [BURAYA_INDIRILEN_CleanYourTV-UI.apk_DOSYA_YOLUNU_YAZIN]
+````markdown
+Aşağıdaki GitHub deposunu kullanarak Android TV'me hafif ve Türkçe CleanYourTV başlatıcısını kurmak istiyorum:
+Repo: https://github.com/ichZara/CleanYourTV-UI-TR
+Televizyonumun yerel IP adresi: [BURAYA_TELEVIZYONUN_IP_ADRESINI_YAZIN, örn: 192.168.1.50]
 
-Lütfen bilgisayarımdan ADB aracılığıyla televizyonuma bağlanıp bu launcher APK'sını kurmamı ve televizyonda varsayılan ana ekran olarak ayarlamamı sağlayan adımları ve komutları çalıştır veya bana sırasıyla yaz.
-```
+Lütfen şu adımları benim için sırasıyla açıkla veya terminal komutlarıyla çalıştır:
+1. Depodaki son sürüm APK'yı (CleanYourTV-UI.apk) indir veya depoyu klonlayıp derle.
+2. Bilgisayarımdan ADB ile yukarıdaki televizyon IP adresine bağlan.
+3. APK'yı televizyona yükle ve televizyonun varsayılan ana ekranı olarak ayarla.
+4. Hata alırsam (örneğin cihaz bulunamadı veya bağlantı reddedildi) nasıl düzelteceğimi belirt.
+````
 
 ---
 
