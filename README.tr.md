@@ -63,8 +63,3 @@ region=TR
 ## Lisans
 
 Bu proje açık kaynaklıdır. Orijinal `cleanyourtv-ui` çalışması üzerine geliştirilmiştir.
-
----
-
-## Diğer Projeler
-Geliştirdiğim diğer açık kaynaklı Android TV ve akıllı ev projelerine göz atmak için **[GitHub Profilimi (@ichZara)](https://github.com/ichZara)** ziyaret edebilirsiniz.
