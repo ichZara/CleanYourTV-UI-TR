@@ -1,3 +1,7 @@
+<p align="center">
+  <b>Türkçe</b> | <a href="README.en.md">English</a>
+</p>
+
 # CleanYourTV-UI (Türkçe & TMDB Destekli Android TV Başlatıcı)
 
 Hafif, reklamsız, akıcı ve televizyonunuzun orijinal sistem servislerine zarar vermeyen modern Android TV başlatıcısı (Launcher).
@@ -33,6 +37,12 @@ Orijinal televizyon sistem servislerine veya fabrika uygulamalarına zarar verme
 ## Öne Çıkan Özellikler
 - **Sağ Üst Dijital Saat ve Sıcaklık Göstergesi:** Ana ekranın sağ üst köşesinde, ayar butonlarının hemen yanında her dakika güncellenen şık dijital saat ve yerel hava sıcaklığı.
 - **Sağ Üst Wi-Fi Hızlı Erişim Butonu:** TV'nin yerel ağ ve kablosuz bağlantı ayarları ekranını (`NetworkActivity`) tek tuşla açan özel buton.
+- **Tema Seçenekleri (Koyu / Açık / Dinamik):** Ayarlar menüsünden her zaman koyu, her zaman açık veya gündoğumu/günbatımına göre otomatik değişen arayüz teması.
+- **Ekran Koruyucu Tarzları:**
+  - *Sinematik (Öneriler):* TMDB film ve dizi afişleri ile zarif saat.
+  - *Matrix (Dijital Yağmur):* Sinematik yeşil düşen kod efekti.
+  - *Saat ve Aurora:* Dinamik kuzey ışıkları ve büyük cam saat.
+  - Ayarlar içinden sağ/sol tuşlarla anında değiştirme ve tek tuşla canlı önizleme.
 - **Tam Türkçe Arayüz:** Tüm ayarlar, menüler, kategoriler, hava durumu durumları ve film/dizi türleri (`Aksiyon & Macera`, `Dizi`, `Film`, `Belgesel` vb.) eksiksiz Türkçeleştirildi.
 - **TMDB Türkiye Optimizasyonu (`tr-TR` / `TR`):** Ana sayfadaki 3 vitrin kartında Türkçe yerel başlığı bulunan popüler içerikler önceliklendirilir.
 - **Döviz ve Piyasa Göstergesi:** Kripto ve piyasa verilerinde Türk Lirası (`₺`) desteği.
