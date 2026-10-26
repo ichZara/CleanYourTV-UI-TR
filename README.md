@@ -7,7 +7,7 @@ Hafif, reklamsız, akıcı ve televizyonunuzun orijinal sistem servislerine zara
 </p>
 
 > **Kaynak & Teşekkür (Credits):**  
-> Bu proje, **[Matheus Caldeira (matheus-caldeira/cleanyourtv-ui)](https://github.com/matheus-caldeira/cleanyourtv-ui)** tarafından geliştirilen harika `cleanyourtv-ui` çalışmasının Türkçe yerelleştirilmiş, saat/hava durumu göstergesi eklenmiş ve Türkiye için optimize edilmiş sürümüdür. Matheus Caldeira'ya açık kaynak katkısı için teşekkür ederiz.
+> Bu proje, **[Gathin (Gathin23/cleanyourtv)](https://github.com/Gathin23/cleanyourtv)** tarafından kurulan açık kaynaklı **CleanYourTV** ekosistemi ve **[Matheus Caldeira (matheus-caldeira/cleanyourtv-ui)](https://github.com/matheus-caldeira/cleanyourtv-ui)** tarafından geliştirilen arayüz çatallaması üzerine inşa edilmiştir. Tam Türkçe yerelleştirme, yön okları, akıcı kaydırma, ayarlanabilir tema/ekran koruyucu tarzları ve Türkiye için TV optimizasyonları eklenmiştir. Açık kaynak dünyasına sağladıkları katkılar için Gathin ve Matheus Caldeira'ya teşekkür ederiz.
 
 ---
 
@@ -131,5 +131,5 @@ Doğrudan bağlantı: **[buymeacoffee.com/ichzara](https://buymeacoffee.com/ichz
 
 ---
 
-## Lisans
-Açık kaynaklıdır. Orijinal `matheus-caldeira/cleanyourtv-ui` lisansına tabidir.
+## Lisans & Telif
+Açık kaynaklıdır (MIT Lisansı). Orijinal **[CleanYourTV (Gathin)](https://github.com/Gathin23/cleanyourtv)** ve **[cleanyourtv-ui (Matheus Caldeira)](https://github.com/matheus-caldeira/cleanyourtv-ui)** lisanslarına tabidir.

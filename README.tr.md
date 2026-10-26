@@ -4,6 +4,9 @@ Hafif, reklamsız, akıcı ve gizlilik odaklı Android TV başlatıcısı (Launc
 
 Orijinal televizyon sistem servislerini devre dışı bırakmadan (`no debloat`), modern Google TV / Apple TV benzeri kart ve öneri yapısı sunar.
 
+> **Kaynak & Teşekkür (Credits):**  
+> Bu proje, **[Gathin (Gathin23/cleanyourtv)](https://github.com/Gathin23/cleanyourtv)** tarafından kurulan **CleanYourTV** ekosistemi ve **[Matheus Caldeira (matheus-caldeira/cleanyourtv-ui)](https://github.com/matheus-caldeira/cleanyourtv-ui)** çalışması üzerine inşa edilmiştir. Açık kaynak katkıları için kendilerine teşekkür ederiz.
+
 ---
 
 ## Öne Çıkan Özellikler
@@ -70,6 +73,6 @@ Doğrudan bağlantı: **[buymeacoffee.com/ichzara](https://buymeacoffee.com/ichz
 
 ---
 
-## Lisans
+## Lisans & Telif
 
-Bu proje açık kaynaklıdır. Orijinal `cleanyourtv-ui` çalışması üzerine geliştirilmiştir.
+Bu proje açık kaynaklıdır (MIT Lisansı). Orijinal **[CleanYourTV (Gathin)](https://github.com/Gathin23/cleanyourtv)** ve **[cleanyourtv-ui (Matheus Caldeira)](https://github.com/matheus-caldeira/cleanyourtv-ui)** projeleri üzerine geliştirilmiştir.
