@@ -127,8 +127,8 @@ final class HomeView extends ViewGroup implements Choreographer.FrameCallback, H
 
     // Night look (like Apple's "Automatic" appearance): darker from sunset to sunrise, with a 2 s transition.
     private static final long NIGHT_MS = 2000;
-    private boolean nightTarget;
-    private float night, nightFrom;     // 0 = day, 1 = night
+    private boolean nightTarget = true;
+    private float night = 1.0f, nightFrom = 1.0f;     // 0 = day, 1 = night
     private long nightAt;
     private final int[] glassNight = new int[Backdrop.GW * Backdrop.GH], frostNight = new int[Backdrop.FW * Backdrop.FH];
     private final int[] neutralGlassPx = new int[Backdrop.GW * Backdrop.GH], neutralFrostPx = new int[Backdrop.FW * Backdrop.FH];
@@ -875,7 +875,7 @@ final class HomeView extends ViewGroup implements Choreographer.FrameCallback, H
     /** Day or night right now (from the sun at your location); `animate`: with the transition. */
     private void checkNight(boolean animate) {
         boolean want = data.isNight(System.currentTimeMillis());
-        if (want == nightTarget) return;
+        if (want == nightTarget && nightAt == 0 && night == (want ? 1 : 0)) return;
         nightTarget = want;
         if (animate && running) {
             nightFrom = night;

@@ -28,6 +28,9 @@ final class Prefs {
     static void init(Context c) {
         app = c.getApplicationContext();
         Ui.applyLanguage();   // the language picked on the TV, now that it can be read
+        if (!sp().contains("theme") || "auto".equals(sp().getString("theme", null))) {
+            sp().edit().putString("theme", "dark").apply();
+        }
     }
 
     private static SharedPreferences sp() {
@@ -64,10 +67,11 @@ final class Prefs {
 
     static void setTemperature(String v) { put("temperature", v); }
 
-    /** "dark" (default), "auto" (dark from sunset to sunrise) or "light". */
+    /** "dark" (default, always dark unless user explicitly chooses light). */
     static String theme() {
         String v = sp().getString("theme", "dark");
-        return v.equals("light") || v.equals("auto") ? v : "dark";
+        if (v == null || v.trim().isEmpty() || "auto".equals(v)) return "dark";
+        return v.equals("light") ? "light" : "dark";
     }
 
     static void setTheme(String v) { put("theme", v); }
