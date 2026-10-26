@@ -122,5 +122,14 @@ Hata bildirirken televizyonunuzun **markasını, tam model kodunu ve Android sü
 
 ---
 
+## Destek Olun / Support
+Bu projeyi faydalı bulduysanız ve geliştirmeleri desteklemek isterseniz bir kahve ısmarlayabilirsiniz:
+
+[![Buy Me A Coffee](https://img.shields.io/badge/Buy%20Me%20A%20Coffee-ichzara-yellow?style=for-the-badge&logo=buy-me-a-coffee&logoColor=black)](https://buymeacoffee.com/ichzara)
+
+Doğrudan bağlantı: **[buymeacoffee.com/ichzara](https://buymeacoffee.com/ichzara)**
+
+---
+
 ## Lisans
 Açık kaynaklıdır. Orijinal `matheus-caldeira/cleanyourtv-ui` lisansına tabidir.
