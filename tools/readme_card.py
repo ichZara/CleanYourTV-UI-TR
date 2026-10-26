@@ -3,8 +3,34 @@ the file the front page displays.
 
 Run tools/readme_stats.py and tools/readme_featured.py first, then:
 python3 tools/readme_card.py Fredoka.ttf docs/card.jpg
+Fredoka is the variable TTF from Google Fonts, and its file is not in this repo: pass the path of the
+copy you downloaded.
 """
+import os
 import sys
+
+USAGE = ("usage: readme_card.py <font.ttf> <out.jpg>\n"
+         "  Fredoka, the variable TTF from Google Fonts, is not in this repo: download it and pass the\n"
+         "  path of the file you saved.")
+
+
+def font_and_out(argv):
+    """The font and the picture, or a usage line that says where the font comes from.
+
+    The font is the one argument a reader brings themselves: it is not in this repo, so a wrong path is
+    the first thing that fails here, and Pillow's `OSError: cannot open resource` names neither the file
+    it wanted nor where to get it.
+    """
+    if len(argv) != 3:
+        sys.exit(USAGE)
+    font, out = argv[1], argv[2]
+    if not os.path.isfile(font):
+        sys.exit(f"cannot open the font at {font}: Fredoka, the variable TTF from Google Fonts, is not in\n"
+                 "this repo, so pass the path of the copy you downloaded")
+    return font, out
+
+
+FONT, OUT = font_and_out(sys.argv)
 
 # See readme_stats.py: Pillow lives in the optional requirements file, so name it rather than crash.
 try:
@@ -12,11 +38,23 @@ try:
 except ImportError:
     sys.exit("readme_card.py needs Pillow: tools/venv/bin/pip install -r tools/requirements-perf.txt")
 
-FONT, OUT = sys.argv[1], sys.argv[2]
 BG, LINE, DIM, GREEN = "#15181e", "#2c313a", "#aab3bd", "#cfffcf"
 W = 1600
 def f(size, wt):
-    x = ImageFont.truetype(FONT, size); x.set_variation_by_axes([wt]); return x
+    # A path that exists is not yet a font: Google Fonts serves Fredoka as a zip holding the variable
+    # `Fredoka[wdth,wght].ttf` and a folder of static single-weight files beside it. `truetype` answers a
+    # zip with `OSError: unknown file format` and `set_variation_by_axes` answers a static file with
+    # `OSError: invalid argument` - neither names the argument that was wrong, and both arrive as a
+    # Pillow traceback in the middle of a draw. Name the file and what it has to be instead.
+    try:
+        x = ImageFont.truetype(FONT, size); x.set_variation_by_axes([wt])
+    except (OSError, ValueError) as error:
+        sys.exit(f"cannot use the font at {FONT}: {error}. The card is drawn with Fredoka's variable TTF\n"
+                 "(Fredoka[wdth,wght].ttf from Google Fonts), not the zip it is downloaded in and not one of\n"
+                 "the static single-weight files beside it, which have no weight to set. Nothing was written.")
+    return x
+f(12, 400)  # the font is the argument the reader brings, so a wrong one is named before any drawing
+
 def spaced(d, cx, y, t, font, sp, fill):
     w = sum(d.textlength(c, font=font) for c in t) + sp * (len(t) - 1); x = cx - w / 2
     for c in t: d.text((x, y), c, font=font, fill=fill); x += d.textlength(c, font=font) + sp
