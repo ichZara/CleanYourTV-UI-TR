@@ -872,9 +872,17 @@ final class HomeView extends ViewGroup implements Choreographer.FrameCallback, H
 
     // MARK: - Night look
 
-    /** Day or night right now (from the sun at your location); `animate`: with the transition. */
+    /** Day or night right now (from theme pref or the sun at your location); `animate`: with the transition. */
     private void checkNight(boolean animate) {
-        boolean want = data.isNight(System.currentTimeMillis());
+        String theme = Prefs.theme();
+        boolean want;
+        if ("dark".equals(theme)) {
+            want = true;
+        } else if ("light".equals(theme)) {
+            want = false;
+        } else {
+            want = data.isNight(System.currentTimeMillis());
+        }
         if (want == nightTarget && nightAt == 0 && night == (want ? 1 : 0)) return;
         nightTarget = want;
         if (animate && running) {
@@ -882,6 +890,7 @@ final class HomeView extends ViewGroup implements Choreographer.FrameCallback, H
             nightAt = SystemClock.uptimeMillis();
         } else {
             night = want ? 1 : 0;
+            nightFrom = night;
             nightAt = 0;
             nightChanged();
         }

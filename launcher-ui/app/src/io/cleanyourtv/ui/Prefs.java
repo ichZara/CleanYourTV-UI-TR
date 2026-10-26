@@ -67,14 +67,23 @@ final class Prefs {
 
     static void setTemperature(String v) { put("temperature", v); }
 
-    /** "dark" (default, always dark unless user explicitly chooses light). */
+    /** "dark" (default), "light", or "auto" (sunset to sunrise). */
     static String theme() {
         String v = sp().getString("theme", "dark");
-        if (v == null || v.trim().isEmpty() || "auto".equals(v)) return "dark";
-        return v.equals("light") ? "light" : "dark";
+        if (v == null || v.trim().isEmpty()) return "dark";
+        if ("light".equals(v) || "auto".equals(v)) return v;
+        return "dark";
     }
 
     static void setTheme(String v) { put("theme", v); }
+
+    /** "picks" (default, cinematic TMDB photos), "matrix" (digital rain) or "aurora" (clock over sky). */
+    static String screensaverStyle() {
+        String v = sp().getString("screensaver_style", "picks");
+        return "matrix".equals(v) || "aurora".equals(v) ? v : "picks";
+    }
+
+    static void setScreensaverStyle(String v) { put("screensaver_style", v); }
 
     // MARK: - City
 

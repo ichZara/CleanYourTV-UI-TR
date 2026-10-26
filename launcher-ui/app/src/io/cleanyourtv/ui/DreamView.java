@@ -139,7 +139,12 @@ final class DreamView extends View implements Choreographer.FrameCallback, HomeD
     };
 
     DreamView(Context c) {
+        this(c, false);
+    }
+
+    DreamView(Context c, boolean forceAurora) {
         super(c);
+        if (forceAurora) fallback = true;
         data = HomeData.get(c);
         recs = Recs.get(c);
         Shaders.dream(scene.palette);
@@ -256,7 +261,7 @@ final class DreamView extends View implements Choreographer.FrameCallback, HomeD
 
     /** Loads the next photo in the background (one at a time); once ready, it comes in at the right moment. */
     private void prepareNext() {
-        if (!running || decoding || prepared != null) return;
+        if (!running || decoding || prepared != null || fallback) return;
         List<Recs.Pick> list = recs.showcase();
         if (list.isEmpty()) return;
         Slide last = incoming != null ? incoming : current;

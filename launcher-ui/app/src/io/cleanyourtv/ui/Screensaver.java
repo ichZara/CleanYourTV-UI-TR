@@ -8,7 +8,8 @@ import android.service.dreams.DreamService;
  * doesn't change those timings. Any key exits.
  */
 public class Screensaver extends DreamService {
-    private DreamView view;
+    private DreamView dreamView;
+    private RainView rainView;
 
     @Override public void onAttachedToWindow() {
         super.onAttachedToWindow();
@@ -16,22 +17,31 @@ public class Screensaver extends DreamService {
         setInteractive(false);
         setFullscreen(true);
         setScreenBright(true);
-        view = new DreamView(this);
-        setContentView(view);
+        String style = Prefs.screensaverStyle();
+        if ("matrix".equals(style)) {
+            rainView = new RainView(this);
+            setContentView(rainView);
+        } else {
+            dreamView = new DreamView(this, "aurora".equals(style));
+            setContentView(dreamView);
+        }
     }
 
     @Override public void onDreamingStarted() {
         super.onDreamingStarted();
-        if (view != null) view.start();
+        if (dreamView != null) dreamView.start();
+        if (rainView != null) rainView.start();
     }
 
     @Override public void onDreamingStopped() {
-        if (view != null) view.stop();
+        if (dreamView != null) dreamView.stop();
+        if (rainView != null) rainView.stop();
         super.onDreamingStopped();
     }
 
     @Override public void onDetachedFromWindow() {
-        if (view != null) view.stop();
+        if (dreamView != null) dreamView.stop();
+        if (rainView != null) rainView.stop();
         super.onDetachedFromWindow();
     }
 }

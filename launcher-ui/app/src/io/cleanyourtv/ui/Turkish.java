@@ -63,6 +63,13 @@ final class Turkish {
             case "Your TV's home screen and screensaver": return "TV ana ekranı ve ekran koruyucusu";
             case "Home Screen": return "Ana Ekran";
             case "Screensaver": return "Ekran Koruyucu";
+            case "Screensaver style": return "Ekran koruyucu tarzı";
+            case "Preview screensaver": return "Ekran koruyucuyu test et";
+            case "Preview now": return "Şimdi başlat";
+            case "TV screensaver settings": return "TV ekran koruyucu ve uyku ayarları";
+            case "Cinematic": return "Sinematik (Öneriler)";
+            case "Matrix": return "Matrix (Dijital Yağmur)";
+            case "Clock & Aurora": return "Saat ve Aurora";
             case "Preview": return "Önizle";
             case "TMDB account": return "TMDB Hesabı";
             case "TMDB account, ": return "TMDB Hesabı, ";
